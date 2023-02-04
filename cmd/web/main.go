@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/pso-dev/delivery-dashboard/backend/internal/app"
 )
 
 func main() {
@@ -12,6 +14,15 @@ func main() {
 }
 
 func run(args []string) error {
-	fmt.Println("Hello World")
-	return nil
+	cfg := app.Configuration{}
+
+	cfg.ENV = "development"
+	cfg.DB.DSN = ""
+	cfg.DB.MaxOpenConnections = 25
+	cfg.DB.MaxIdleConnections = 25
+	cfg.DB.MaxIdleTime = "15m"
+
+	app := app.New(cfg)
+
+	return app.Run()
 }
