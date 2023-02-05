@@ -2,9 +2,17 @@ package data
 
 import "database/sql"
 
-type Models struct {
+type Repositories struct {
 }
 
-func NewModels(db *sql.DB) *Models {
-	return &Models{}
+func NewRepositories(db *sql.DB) *Repositories {
+	return &Repositories{}
+}
+
+type Repository interface {
+	Insert(any) error
+	Get(id int64) (*any, error)
+	GetAll(...any) ([]*any, error)
+	Update(*any) error
+	Delete(id int64) error
 }

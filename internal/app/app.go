@@ -3,6 +3,7 @@ package app
 import (
 	"database/sql"
 	"fmt"
+	"sync"
 
 	"github.com/pso-dev/delivery-dashboard/backend/internal/data"
 )
@@ -18,9 +19,10 @@ type Configuration struct {
 }
 
 type application struct {
-	cfg    Configuration
-	db     *sql.DB
-	models *data.Models
+	cfg          Configuration
+	db           *sql.DB
+	repositories *data.Repositories
+	mu           sync.Mutex
 }
 
 func New(cfg Configuration) *application {
