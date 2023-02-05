@@ -132,3 +132,46 @@ func (repo *ResourceRepository) GetAll(name string, workgroups []string, clearan
 	}
 	return resources, nil
 }
+
+func (repo *ResourceRepository) Update(r *Resource) error {
+	query := ``
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	args := []interface{}{
+		r.Name,
+		r.Email,
+		r.JobTitle,
+		r.Manager,
+		r.Location,
+		r.WorkGroup,
+		r.Clearance,
+		pq.Array(r.Specialties),
+		pq.Array(r.Certifications),
+		r.Active,
+		r.ID,
+	}
+
+	err := repo.DB.QueryRowContext(ctx, query, args...).Scan()
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return data.ErrEditConflict
+		default:
+			return err
+		}
+	}
+	return nil
+}
+
+func (repo *ResourceRepository) Delete(id int64) error {
+	query := ``
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	repo.DB.QueryRowContext(ctx, query, id)
+
+	return nil
+}
