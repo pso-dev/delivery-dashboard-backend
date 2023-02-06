@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/pso-dev/delivery-dashboard/backend/internal/data"
+	"github.com/pso-dev/delivery-dashboard/backend/internal/data/postgres"
 )
 
 type Configuration struct {
@@ -30,6 +31,23 @@ func New(cfg Configuration) *application {
 }
 
 func (a *application) Run() error {
-	fmt.Println("Hello World")
+
+	db, err := postgres.OpenDB(
+		a.cfg.DB.DSN,
+		a.cfg.DB.MaxOpenConnections,
+		a.cfg.DB.MaxIdleConnections,
+		a.cfg.DB.MaxIdleTime)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	fmt.Println("DB connection pool established")
+
+	a.db = db
+	a.repositories = data.NewRepositories(db)
+
+	a.mu = sync.Mutex{}
+
 	return nil
 }

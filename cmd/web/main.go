@@ -17,7 +17,8 @@ func run(args []string) error {
 	cfg := app.Configuration{}
 
 	cfg.ENV = "development"
-	cfg.DB.DSN = ""
+	// TODO: Move these out from being hard-coded. Only for early development
+	cfg.DB.DSN = "postgres://postgres:password@localhost/pso?sslmode=disable"
 	cfg.DB.MaxOpenConnections = 25
 	cfg.DB.MaxIdleConnections = 25
 	cfg.DB.MaxIdleTime = "15m"
