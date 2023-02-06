@@ -2,11 +2,11 @@ package app
 
 import (
 	"database/sql"
-	"fmt"
 	"sync"
 
 	"github.com/pso-dev/delivery-dashboard/backend/internal/data"
 	"github.com/pso-dev/delivery-dashboard/backend/internal/data/postgres"
+	"github.com/pso-dev/delivery-dashboard/backend/pkg/jlog"
 )
 
 type Configuration struct {
@@ -21,13 +21,14 @@ type Configuration struct {
 
 type application struct {
 	cfg          Configuration
+	logger       *jlog.Logger
 	db           *sql.DB
 	repositories *data.Repositories
 	mu           sync.Mutex
 }
 
-func New(cfg Configuration) *application {
-	return &application{cfg: cfg}
+func New(cfg Configuration, logger *jlog.Logger) *application {
+	return &application{cfg: cfg, logger: logger}
 }
 
 func (a *application) Run() error {
@@ -42,7 +43,7 @@ func (a *application) Run() error {
 	}
 	defer db.Close()
 
-	fmt.Println("DB connection pool established")
+	a.logger.PrintInfo("DB connection pool established", map[string]string{"connectionPoolSize": "25"})
 
 	a.db = db
 	a.repositories = data.NewRepositories(db)
