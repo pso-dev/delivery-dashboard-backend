@@ -16,12 +16,15 @@ const (
 
 type Configuration struct {
 	Port int64
-	ENV  string
+	Env  string
 	DB   struct {
 		DSN                string
 		MaxOpenConnections int
 		MaxIdleConnections int
 		MaxIdleTime        string
+	}
+	CORS struct {
+		TrustedOrigins []string
 	}
 }
 

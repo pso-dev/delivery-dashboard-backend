@@ -49,7 +49,7 @@ func (app *application) serve() error {
 
 	app.logger.PrintInfo("starting server", map[string]string{
 		"addr": srv.Addr,
-		"env":  app.cfg.ENV,
+		"env":  app.cfg.Env,
 	})
 
 	err := srv.ListenAndServe()
