@@ -12,3 +12,7 @@ build:
 .PHONY: run
 run:
 	@go run ./cmd/web
+
+.PHONY: clean
+clean:
+	@rm -rf ./bin
