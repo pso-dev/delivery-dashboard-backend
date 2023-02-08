@@ -8,7 +8,7 @@ func (app *application) handleHealthcheck() http.HandlerFunc {
 			"status": "available",
 			"system_info": map[string]string{
 				"environment": app.cfg.Env,
-				"version":     version,
+				"version":     app.cfg.Version,
 			},
 		}
 

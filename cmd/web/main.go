@@ -2,12 +2,16 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"strings"
 
 	"github.com/pso-dev/delivery-dashboard/backend/internal/app"
 	"github.com/pso-dev/delivery-dashboard/backend/pkg/jlog"
 )
+
+var Version string
+var Buildtime string
 
 func main() {
 	logger := jlog.New(os.Stdout, jlog.LevelInfo)
@@ -18,6 +22,7 @@ func main() {
 
 func run(args []string, logger *jlog.Logger) error {
 	cfg := app.Configuration{}
+	cfg.Version = fmt.Sprintf("%s - %s", Version, Buildtime)
 
 	flags := flag.NewFlagSet(args[0], flag.ExitOnError)
 

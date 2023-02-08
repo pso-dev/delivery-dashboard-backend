@@ -10,14 +10,11 @@ import (
 )
 
 // Convert this to be based on github commit
-const (
-	version = "0.1"
-)
-
 type Configuration struct {
-	Port int64
-	Env  string
-	DB   struct {
+	Version string
+	Port    int64
+	Env     string
+	DB      struct {
 		DSN                string
 		MaxOpenConnections int
 		MaxIdleConnections int
