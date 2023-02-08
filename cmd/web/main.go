@@ -17,8 +17,9 @@ func main() {
 func run(args []string, logger *jlog.Logger) error {
 	cfg := app.Configuration{}
 
-	cfg.ENV = "development"
 	// TODO: Move these out from being hard-coded. Only for early development
+	cfg.Port = 5432
+	cfg.ENV = "development"
 	cfg.DB.DSN = "postgres://postgres:password@localhost/pso?sslmode=disable"
 	cfg.DB.MaxOpenConnections = 25
 	cfg.DB.MaxIdleConnections = 25

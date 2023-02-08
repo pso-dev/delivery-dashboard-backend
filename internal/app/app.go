@@ -10,8 +10,9 @@ import (
 )
 
 type Configuration struct {
-	ENV string
-	DB  struct {
+	Port int64
+	ENV  string
+	DB   struct {
 		DSN                string
 		MaxOpenConnections int
 		MaxIdleConnections int
@@ -24,11 +25,16 @@ type application struct {
 	logger       *jlog.Logger
 	db           *sql.DB
 	repositories *data.Repositories
+	wg           sync.WaitGroup
 	mu           sync.Mutex
 }
 
 func New(cfg Configuration, logger *jlog.Logger) *application {
-	return &application{cfg: cfg, logger: logger}
+	return &application{
+		cfg:    cfg,
+		logger: logger,
+		mu:     sync.Mutex{},
+	}
 }
 
 func (a *application) Run() error {
@@ -48,7 +54,5 @@ func (a *application) Run() error {
 	a.db = db
 	a.repositories = data.NewRepositories(db)
 
-	a.mu = sync.Mutex{}
-
-	return nil
+	return a.serve()
 }
