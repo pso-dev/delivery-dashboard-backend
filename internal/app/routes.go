@@ -6,7 +6,9 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func (a *application) routes() http.Handler {
+func (app *application) routes() http.Handler {
 	router := httprouter.New()
+
+	router.HandlerFunc(http.MethodGet, "/v1/healthcheck", app.handleHealthcheck())
 	return router
 }

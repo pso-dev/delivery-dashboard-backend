@@ -9,6 +9,11 @@ import (
 	"github.com/pso-dev/delivery-dashboard/backend/pkg/jlog"
 )
 
+// Convert this to be based on github commit
+const (
+	version = "0.1"
+)
+
 type Configuration struct {
 	Port int64
 	ENV  string
