@@ -71,7 +71,7 @@ func (repo *ResourceRepository) Get(id int64) (*data.Resource, error) {
 }
 
 func (repo *ResourceRepository) GetAll(name string, workgroups []string, clearance string, specialties []string,
-	certifications []string, manager string, active bool) ([]*data.Resource, error) {
+	certifications []string, manager string, active bool, filters data.Filters) ([]*data.Resource, data.Metadata, error) {
 	query := ``
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -88,7 +88,7 @@ func (repo *ResourceRepository) GetAll(name string, workgroups []string, clearan
 
 	rows, err := repo.DB.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, err
+		return nil, data.Metadata{}, err
 	}
 	defer rows.Close()
 
@@ -112,11 +112,14 @@ func (repo *ResourceRepository) GetAll(name string, workgroups []string, clearan
 			&resource.Active,
 		)
 		if err != nil {
-			return nil, err
+			return nil, data.Metadata{}, err
 		}
 		resources = append(resources, &resource)
 	}
-	return resources, nil
+
+	metadata := data.CalculateMetadata(totalRecords, filters.Page, filters.PageSize)
+
+	return resources, metadata, nil
 }
 
 func (repo *ResourceRepository) Update(r *data.Resource) error {

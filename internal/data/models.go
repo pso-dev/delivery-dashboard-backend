@@ -12,7 +12,7 @@ func NewRepositories(db *sql.DB) *Repositories {
 type Repository interface {
 	Insert(any) error
 	Get(id int64) (*any, error)
-	GetAll(...any) ([]*any, error)
+	GetAll(...any) ([]*any, Metadata, error)
 	Update(*any) error
 	Delete(id int64) error
 }
