@@ -15,7 +15,15 @@ type ResourceRepository struct {
 }
 
 func (repo *ResourceRepository) Insert(r *data.Resource) error {
-	query := ``
+	query := `
+		INSERT INTO resource
+		(employee_id, name, email, job_title_id, manager_id, location_id, workgroup_id, clearance, specialties, certifications, active)
+		VALUES ($1, $2, $3, 
+			(SELECT TITLE_id FROM jobtitle WHERE title=$4),
+			(SELECT m.id FROM resource m WHERE m.name=$5),
+			(SELECT location_id FROM location WHERE name=$6),
+			(SELECT workgroup_id FROM workgroup WHERE name=$7), 
+			$8, $9, $10, $11) RETURNING active`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -29,8 +37,8 @@ func (repo *ResourceRepository) Insert(r *data.Resource) error {
 		r.Location,
 		r.WorkGroup,
 		r.Clearance,
-		r.Specialties,
-		r.Certifications,
+		pq.Array(r.Specialties),
+		pq.Array(r.Certifications),
 		r.Active,
 	}
 
