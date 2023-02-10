@@ -1,5 +1,13 @@
 CREATE EXTENSION IF NOT EXISTS citext;
 
+CREATE TYPE clearance AS ENUM (
+    'None',
+    'Baseline',
+    'NV1',
+    'NV2',
+    'TSPV'
+);
+
 CREATE TABLE IF NOT EXISTS project_status (
     status_id BIGSERIAL PRIMARY KEY,
     status VARCHAR(256) NOT NULL UNIQUE ON DELETE RESTRICT
@@ -43,13 +51,12 @@ CREATE TABLE IF NOT EXISTS resource (
     manager_id INTEGER NOT NULL,
     location_id INTEGER NOT NULL,
     workgroup_id INTEGER NOT NULL,
-    clearance_id INTEGER,
+    clearance_level clearance DEFAULT 'None',
     active BOOLEAN NOT NULL DEFAULT 't',
     CONSTRAINT fk_title FOREIGN KEY(title_id) REFERENCES jobtitle(title_id),
     CONSTRAINT fk_manager FOREIGN KEY(manager_id) REFERENCES resource(employee_id),
     CONSTRAINT fk_location FOREIGN KEY(location_id) REFERENCES location(location_id),
-    CONSTRAINT fk_workgroup FOREIGN KEY(workgroup_id) REFERENCES workgroup(workgroup_id),
-    CONSTRAINT fk_clearance FOREIGN KEY(clearance_id) REFERENCES clearance(clearance_id),
+    CONSTRAINT fk_workgroup FOREIGN KEY(workgroup_id) REFERENCES workgroup(workgroup_id)
 );
 
 CREATE TABLE IF NOT EXISTS resource_specialty (
