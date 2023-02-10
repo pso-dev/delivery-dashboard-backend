@@ -1,5 +1,10 @@
 CREATE EXTENSION IF NOT EXISTS citext;
 
+CREATE TABLE IF NOT EXISTS project_status (
+    status_id BIGSERIAL PRIMARY KEY,
+    status VARCHAR(256) NOT NULL UNIQUE ON DELETE RESTRICT
+);
+
 CREATE TABLE IF NOT EXISTS clearance (
     clearance_id BIGSERIAL PRIMARY KEY,
     description VARCHAR(256) NOT NULL UNIQUE ON DELETE RESTRICT
@@ -53,6 +58,12 @@ CREATE TABLE IF NOT EXISTS resource_specialty (
     PRIMARY KEY(resource_id, specialty_id)
 );
 
+CREATE TABLE IF NOT EXISTS resource_certification (
+    employee_id INTEGER NOT NULL,
+    certification_id INTEGER NOT NULL,
+    PRIMARY KEY(employee_id, certification_id)
+);
+
 CREATE TABLE IF NOT EXISTS project (
     project_id BIGSERIAL PRIMARY KEY,
     opportunity_id VARCHAR(256),
@@ -63,4 +74,6 @@ CREATE TABLE IF NOT EXISTS project (
     end_customer VARCHAR(256),
     project_manager_id INTEGER,
     status_id INTEGER,
+    CONSTRAINT fk_project_maanger FOREIGN KEY(project_manager_id) REFERENCES resource(employee_id),
+    CONSTRAINT fk_status FOREIGN KEY(status_id) REFERENCES project_status(status_id)
 );
